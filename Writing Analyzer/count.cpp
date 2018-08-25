@@ -1,5 +1,5 @@
-/*TODO: import standard libraries via modules
-TODO: the C++ module system is not complete yet. Refactor to conform to the standars
+/*TODO: Import standard libraries via modules
+TODO: C++ module system is not complete yet. Refactor to conform to the standard
 when it comes out*/
 #include <fstream>
 #include <string>
@@ -70,8 +70,8 @@ public:
 				continue; //instead of break so as to avoid sentenceEndMet being set to false
 			default:
 				//if (isAlphabet(read)) {
-				if (inBlank) { //another word encountered
-					if (lineTemp >= 2) { //new paragraph started
+				if (inBlank) { //Another word encountered
+					if (lineTemp >= 2) { //New paragraph started
 						paragraphEnd();
 						paragraphJustEnded = true;
 					}

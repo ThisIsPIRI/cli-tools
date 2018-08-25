@@ -1,4 +1,4 @@
-# writing-counter
+# PIRI Writing Counter
 
 A command-line tool for counting paragraphs, sentences, words and characters.
 

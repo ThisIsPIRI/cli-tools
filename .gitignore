@@ -2,3 +2,8 @@
 *Release/
 *.vcxproj*
 *.ifc
+*.sln
+*.vs/
+*x64/
+*x32/
+*.txt
