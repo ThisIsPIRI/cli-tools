@@ -18,10 +18,9 @@ public:
 
 export class Counter {
 protected:
-	char read;
-	bool inWord, inBlank, sentenceEndMet, paragraphJustEnded;
-	int lineTemp, spaceTemp;
+	bool inWord, inBlank;
 	string lastWord, firstInThis;
+	int paraCharCount, paraWordCount, paraSentenceCount;
 	bool isAlphabet(char c) {
 		return '!' <= c && c <= '~';
 	}
@@ -38,19 +37,21 @@ protected:
 		paraCharCount = paraWordCount = paraSentenceCount = 0;
 	}
 public:
-	int charCount, wordCount, sentenceCount, paraCount, paraCharCount, paraWordCount, paraSentenceCount;
-	bool countSpaces = false, countSentenceEnds = false;
+	int charCount, wordCount, sentenceCount, paraCount;
 	vector<Paragraph> paragraphs; //vector to store paraCharCounts, paraWordCounts and paraSentenceCounts
 	void initialize() {
-		inWord = sentenceEndMet = false;
-		paragraphJustEnded = inBlank = true;
-		lineTemp = spaceTemp = charCount = wordCount = sentenceCount = paraCount = paraCharCount = paraWordCount = paraSentenceCount = 0;
+		inWord = false;
+		inBlank = true;
+		charCount = wordCount = sentenceCount = paraCount = paraCharCount = paraWordCount = paraSentenceCount = 0;
 		paragraphs.clear();
 	}
-	void count(ifstream& file) {
+	void count(ifstream& file, bool countSpaces = false, bool countSentenceEnds = false) {
 		initialize();
-		while (file.good()) {
-			read = file.get(); //TODO: handle non-ASCII characters correctly
+		bool sentenceEndMet = false;
+		bool paragraphJustEnded = true;
+		int lineTemp = 0;
+		char read; //TODO: handle non-ASCII characters correctly
+		while (file.get(read)) {
 			switch (read) {
 			case '\n':
 				lineTemp++;
@@ -69,7 +70,6 @@ public:
 				if (countSentenceEnds) paraCharCount++;
 				continue; //instead of break so as to avoid sentenceEndMet being set to false
 			default:
-				//if (isAlphabet(read)) {
 				if (inBlank) { //Another word encountered
 					if (lineTemp >= 2) { //New paragraph started
 						paragraphEnd();
@@ -86,7 +86,6 @@ public:
 				}
 				paraCharCount++;
 				lastWord += read;
-				//}
 				break;
 			}
 			sentenceEndMet = false;
