@@ -17,8 +17,8 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	if (strcmp(argv[1], "/?") == 0) { //help
+		cout << "Usage : wipe <filename 1> <filename 2> ..." << endl;
 		cout << "Wipes files, overwriting them with 0, 10, 100 and -1." << endl;
-		cout << "usage : wipe <filename 1> <filename 2> ..." << endl;
 		cout << "If a filename contains a whitespace, surround it with \"\"" << endl;
 		return 0;
 	}

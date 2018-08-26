@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
 	if (argc >= 2) {
 		fileName = argv[1];
 		if (fileName == "/?") { //Help. TODO: Make it more efficient
+			cout << "Usage: " << verb << " <filename> <key>" << endl;
 			cout << capitalize(verb) << "s a file using XOR." << endl;
-			cout << verb << " <filename> <key>" << endl;
 			cout << "The key must be an integer less than 256." << endl;
 			cout << "If the filename contains a whitespace, surround it with \"\"." << endl;
 			return 0;
