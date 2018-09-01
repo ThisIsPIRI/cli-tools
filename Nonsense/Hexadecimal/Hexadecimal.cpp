@@ -33,8 +33,8 @@ void csleep(int millis) {
 	Sleep(millis);
 #elif defined(__unix__) || defined(__APPLE__)
 	struct timespec spec;
-	spec.tv_sec = 0;
-	spec.tv_nsec = millis * 1000000;
+	spec.tv_sec = millis / 1000;
+	spec.tv_nsec = (millis % 1000) * 1000000;
 	nanosleep(spec, NULL);
 #endif
 }
