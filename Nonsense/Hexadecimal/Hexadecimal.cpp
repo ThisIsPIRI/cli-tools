@@ -1,8 +1,11 @@
-//TODO: Add cross-platform support
+#include <algorithm>
+#include <cctype>
 #include <chrono>
 #include <map>
+#include <cmath>
 #include <random>
 #include <cstdio>
+#include <string>
 #include <utility>
 #ifdef _WIN32
 #include <Windows.h>
@@ -21,7 +24,7 @@ public:
 	RandomHolder() : engine(std::chrono::system_clock::now().time_since_epoch().count()) {}
 	T get(T min, T max) {
 		pair<T, T> range(min, max);
-		if (dists.find(range) == dists.end()) {
+		if(dists.find(range) == dists.end()) {
 			dists[range] = uniform_int_distribution<T>(range.first, range.second);
 		}
 		return dists[range](engine);
@@ -39,16 +42,32 @@ void csleep(int millis) {
 #endif
 }
 
-int main() {
-	system("color 0a");
+bool isValidNum(string s) {
+	return !s.empty() && all_of(s.begin(), s.end(), isdigit);
+}
+
+int main(int argc, char** argv) {
+	//Read variables from command-line arguments
+	//sleepChance: Actual chance of sleeping per number is 1 / (sleepChance + 1)
+	int sleepChance, iterations;
+	const int nOfRead = 2;
+	int *toRead[nOfRead] = {&sleepChance, &iterations};
+	int defaultValues[nOfRead] = {3, 5000};
+	for(int i = 1;i <= nOfRead;i++) {
+		if(i < argc && isValidNum(argv[i]))
+			*toRead[i - 1] = strtol(argv[i], NULL, 10);
+		else
+			*toRead[i - 1] = defaultValues[i - 1];
+	}
+	system("color 0a"); //TODO: Add cross-platform support
 	RandomHolder<int> holder;
-	printf("--STARTING KERNEL MEMORY DUMP--\n");
-	for (int i = 0; i < 5000; i++) {
-		if (i % 250 == 0) {
-			sectionStart:
+	printf("--STARTING KERNEL MEMORY DUMP WITH ARGUMENTS %d/%d--\n", sleepChance, iterations);
+	for(int i = 0; i < iterations; i++) {
+		if(i % 250 == 0) {
+		sectionStart:
 			int pages = holder.get(0, 300);
 			printf("\nSECTION 0x%x, %d VIRTUAL PAGES\n", holder.get(0, 100000), pages);
-			if (!holder.get(0, 5)) {
+			if(!holder.get(0, 5)) {
 				printf("!!PAGE CORRUPTION DETECTED. SENDING SIGSEGV TO ALL %d PROCESSES!!\n", pages);
 				for (int j = 0; j < pages * 10; j++) {
 					printf("%x", holder.get(0, 1000000000));
@@ -58,11 +77,12 @@ int main() {
 			}
 		}
 		printf("%x", holder.get(0, 1000000000));
-		if (!holder.get(0, 3))
-			Sleep(holder.get(0, 60));
-		if (!holder.get(0, 3))
+		if(!holder.get(0, sleepChance))
+			csleep(holder.get(0, 60));
+		if(!holder.get(0, 3))
 			printf(" ");
 	}
 	printf("\n--PROCESS COMPLETE--\n");
+	getchar();
 	return 0;
 }
