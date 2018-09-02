@@ -19,9 +19,9 @@ int main(int argc, char** argv) {
 #endif
 	string fileName;
 
-	if (argc >= 2) {
+	if(argc >= 2) {
 		fileName = argv[1];
-		if (fileName == "/?") { //Help. TODO: Make it more efficient
+		if(fileName == "/?") { //Help. TODO: Make it more efficient
 			cout << "Usage: " << verb << " <filename> <key>" << endl;
 			cout << capitalize(verb) << "s a file using XOR." << endl;
 			cout << "The key must be an integer less than 256." << endl;
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 			return 0;
 		}
 	}
-	if (argc < 3) {
+	if(argc < 3) {
 		cout << "Not enough arguments. Try " << verb << " /? for help." << endl;
 		return 0;
 	}

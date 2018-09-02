@@ -39,7 +39,7 @@ void Counter::count(ifstream& file, bool countSpaces = false, bool countSentence
 	bool paragraphJustEnded = true;
 	int lineTemp = 0;
 	char read; //TODO: handle non-ASCII characters correctly
-	while (file.get(read)) {
+	while(file.get(read)) {
 		switch (read) {
 		case '\n':
 			lineTemp++;
@@ -48,22 +48,22 @@ void Counter::count(ifstream& file, bool countSpaces = false, bool countSentence
 			if (countSpaces) paraCharCount++;
 		case '\t':
 		BLANK:
-			if (inWord) {
+			if(inWord) {
 				flipState();
 				if (sentenceEndMet) paraSentenceCount++;
 			}
 			break;
 		case '.':case '?':case '!':
 			sentenceEndMet = true;
-			if (countSentenceEnds) paraCharCount++;
+			if(countSentenceEnds) paraCharCount++;
 			continue; //instead of break so as to avoid sentenceEndMet being set to false
 		default:
-			if (inBlank) { //Another word encountered
-				if (lineTemp >= 2) { //New paragraph started
+			if(inBlank) { //Another word encountered
+				if(lineTemp >= 2) { //New paragraph started
 					paragraphEnd();
 					paragraphJustEnded = true;
 				}
-				else if (paragraphJustEnded && paraWordCount > 0) { //The first word of a new paragraph. Check paraWordCount so it doesn't register an empty string as the first word of the first paragraph
+				else if(paragraphJustEnded && paraWordCount > 0) { //The first word of a new paragraph. Check paraWordCount so it doesn't register an empty string as the first word of the first paragraph
 					firstInThis = lastWord;
 					paragraphJustEnded = false;
 				}
