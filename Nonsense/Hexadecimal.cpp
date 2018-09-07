@@ -38,12 +38,17 @@ void csleep(int millis) {
 	struct timespec spec;
 	spec.tv_sec = millis / 1000;
 	spec.tv_nsec = (millis % 1000) * 1000000;
-	nanosleep(spec, NULL);
+	nanosleep(&spec, NULL);
 #endif
 }
 
+//Made because of GCC rejecting isdigit itself as a UnaryPredicate
+bool isDigitPred(char c) {
+	return isdigit(c);
+}
+
 bool isValidNum(string s) {
-	return !s.empty() && all_of(s.begin(), s.end(), isdigit);
+	return !s.empty() && all_of(s.begin(), s.end(), isDigitPred);
 }
 
 int main(int argc, char** argv) {
@@ -59,7 +64,12 @@ int main(int argc, char** argv) {
 		else
 			*toRead[i - 1] = defaultValues[i - 1];
 	}
-	system("color 0a"); //TODO: Add cross-platform support
+#ifdef _WIN32
+	system("color 0a");
+#elif defined(__unix__) || defined(__APPLE__)
+	printf("\033[40;1;32m");
+#endif
+	setvbuf(stdout, NULL, _IONBF, 64);
 	RandomHolder<int> holder;
 	printf("--STARTING KERNEL MEMORY DUMP WITH ARGUMENTS %d/%d--\n", sleepChance, iterations);
 	for(int i = 0; i < iterations; i++) {
