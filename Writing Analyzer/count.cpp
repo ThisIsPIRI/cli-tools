@@ -78,7 +78,9 @@ void Counter::count(ifstream& file, bool countSpaces = false, bool countSentence
 		}
 		sentenceEndMet = false;
 	}
-	//The last paragraph and sentence aren't counted in above loop
-	paraSentenceCount++;
+	//The last sentence isn't counted above if there's no trailing blank space in the file
+	if(!inBlank)
+		paraSentenceCount++;
+	//The last paragraph isn't counted above
 	paragraphEnd();
 }
