@@ -1,3 +1,3 @@
 # PIRI CLI Tools
 
-Simple CLI tools.
+Simple CLI tools in C++.

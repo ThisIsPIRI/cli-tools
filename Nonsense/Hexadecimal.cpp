@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <string>
 #include <utility>
+#include <stdexcept>
 #ifdef _WIN32
 #include <Windows.h>
 #elif defined(__unix__) || defined(__APPLE__)
@@ -42,28 +43,32 @@ void csleep(int millis) {
 #endif
 }
 
-//Made because of GCC rejecting isdigit itself as a UnaryPredicate
-bool isDigitPred(char c) {
-	return isdigit(c);
-}
-
-bool isValidNum(string s) {
-	return !s.empty() && all_of(s.begin(), s.end(), isDigitPred);
-}
-
 int main(int argc, char** argv) {
 	//Read variables from command-line arguments
-	//sleepChance: Actual chance of sleeping per number is 1 / (sleepChance + 1)
+	if(argc >= 2 && string(argv[1]) == "-h") {
+		printf("Usage: hexadecimal [sleepChance] [iterations]\n"
+				"Will print (iterations) random hexadecimal numbers along with some text.\n"
+				"Will never stop until interrupted if (iterations) < 0.\n"
+				"After printing each number, has a (1 / sleepChance) chance to sleep for [0-60] milliseconds.\n");
+		return 0;
+	}
 	int sleepChance, iterations;
+	bool noStop = false;
 	const int nOfRead = 2;
 	int *toRead[nOfRead] = {&sleepChance, &iterations};
-	int defaultValues[nOfRead] = {3, 5000};
+	int defaultValues[nOfRead] = {4, 5000};
 	for(int i = 1;i <= nOfRead;i++) {
-		if(i < argc && isValidNum(argv[i]))
-			*toRead[i - 1] = strtol(argv[i], NULL, 10);
-		else
+		if(i < argc) try {
+			*toRead[i - 1] = stoi(argv[i], NULL, 10);
+		}
+		catch(exception e) { //Not numeric or out of range
 			*toRead[i - 1] = defaultValues[i - 1];
+			printf("Argument %s was invalid.\n", argv[i]);
+		}
+		else *toRead[i - 1] = defaultValues[i - 1];
 	}
+	if(iterations < 0) noStop = true;
+
 #ifdef _WIN32
 	system("color 0a");
 #elif defined(__unix__) || defined(__APPLE__)
@@ -72,7 +77,9 @@ int main(int argc, char** argv) {
 	setvbuf(stdout, NULL, _IONBF, 64);
 	RandomHolder<int> holder;
 	printf("--STARTING KERNEL MEMORY DUMP WITH ARGUMENTS %d/%d--\n", sleepChance, iterations);
-	for(int i = 0; i < iterations; i++) {
+	sleepChance--; //After this, actual chance of sleeping per number is 1 / (sleepChance + 1)
+
+	for(int i = 0;noStop || i < iterations;i++) {
 		if(i % 250 == 0) {
 		sectionStart:
 			int pages = holder.get(0, 300);

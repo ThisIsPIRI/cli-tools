@@ -2,7 +2,7 @@
 
 A command-line tool for counting paragraphs, sentences, words and characters.
 
-Use : count filename [-s] [-p] [-w]
+Use : `count filename [-s] [-p] [-w]`
 
 Execute without any argument to show help.
 
